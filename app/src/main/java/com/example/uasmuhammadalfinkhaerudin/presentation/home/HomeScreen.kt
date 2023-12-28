@@ -3,6 +3,7 @@ package com.example.uasmuhammadalfinkhaerudin.presentation.home
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -43,6 +44,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.uasmuhammadalfinkhaerudin.domain.model.Note
 import com.example.uasmuhammadalfinkhaerudin.presentation.home.common.mySnackBar
 import com.example.uasmuhammadalfinkhaerudin.presentation.home.components.AlertHomeScreen
 import com.example.uasmuhammadalfinkhaerudin.presentation.home.components.EmptyNoteScrenn
@@ -100,7 +102,7 @@ fun HomeScreen(
                 modifier = Modifier
                     // Kasih background color
                     .background(Color(android.graphics.Color.parseColor("#FFE6E6")))
-                    .padding(horizontal = 10.dp)
+                    .padding(horizontal = 10.dp, vertical = 20.dp)
                     .fillMaxWidth()
             ) {
                 Text(
@@ -141,7 +143,14 @@ fun HomeScreen(
             mainViewModel = mainViewModel
         )
 
-        if (notes.isEmpty()) {
+        // Buat filter dari hari yang di klik lalu taro di list
+        var filteredNotes = listOf<Note>()
+        for (note in notes) {
+            if (note.hari == dayIndoVersion) {
+                filteredNotes += note
+            }
+        }
+        if (filteredNotes.isEmpty()) {
             EmptyNoteScrenn(paddingValues = paddingValues)
         } else {
             LazyColumn(
@@ -152,7 +161,7 @@ fun HomeScreen(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 items (
-                    items = notes,
+                    items = filteredNotes,
                     key = { it.id }
                 ) {note ->
                     var color = Color(0xFFFFABE1)
@@ -179,31 +188,43 @@ fun HomeScreen(
         if (showBottomSheet) {
             ModalBottomSheet(
                 onDismissRequest = { showBottomSheet = false },
-                sheetState = sheetState
+                sheetState = sheetState,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp)
             ) {
                 Column(
                     verticalArrangement = Arrangement.SpaceEvenly,
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .padding(horizontal = 10.dp)
+                        .fillMaxWidth()
                 ) {
                     listDays.forEach { (key, value) ->
-                        Button(
-                            onClick = {
-                                scope.launch { sheetState.hide() }.invokeOnCompletion {
-                                    if (!sheetState.isVisible) {
-                                        showBottomSheet = false
-                                    }
-                                    day = key
-                                }
-                            },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color.Magenta,
-                                contentColor = Color.White
-                            ),
-                            // Kecilin buttonnya
-                            modifier = Modifier.height(30.dp),
-                            shape = CutCornerShape(percent = 25)
+                        Box(
+                            modifier = Modifier
+                                .padding(vertical = 2.dp)
                         ) {
-                            Text(text = value)
+                            Button(
+                                onClick = {
+                                    scope.launch { sheetState.hide() }.invokeOnCompletion {
+                                        if (!sheetState.isVisible) {
+                                            showBottomSheet = false
+                                        }
+                                        day = key
+                                    }
+                                },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color.Magenta,
+                                    contentColor = Color.White
+                                ),
+                                // Kecilin buttonnya
+                                modifier = Modifier
+                                    .height(30.dp),
+                                shape = CutCornerShape(percent = 25),
+                            ) {
+                                Text(text = value)
+                            }
                         }
                     }
                 }

@@ -41,7 +41,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.uasmuhammadalfinkhaerudin.presentation.MainViewModel
+import com.example.uasmuhammadalfinkhaerudin.presentation.SplashViewModel
 import com.example.uasmuhammadalfinkhaerudin.presentation.home.navigation.AppNavigation
 import com.example.uasmuhammadalfinkhaerudin.ui.theme.UASMuhammadAlfinKhaerudinTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -52,7 +54,10 @@ class MainActivity : ComponentActivity() {
     //@RequiresApi(Build.VERSION_CODES.O)
 
     private val mainViewModel by viewModels<MainViewModel>()
+    private val viewModel: SplashViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
+        splashScreen.setKeepOnScreenCondition{viewModel.isLoading.value}
         super.onCreate(savedInstanceState)
         setContent {
             UASMuhammadAlfinKhaerudinTheme {
