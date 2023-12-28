@@ -52,7 +52,9 @@ fun StartScreen(
         )
         Spacer(modifier = Modifier.size(10.dp))
         Button(
-            onClick = { startApp },
+            onClick = {
+                startApp()
+            },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Magenta,
                 contentColor = Color.White
