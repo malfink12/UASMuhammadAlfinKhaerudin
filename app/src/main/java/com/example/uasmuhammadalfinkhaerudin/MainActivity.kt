@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -40,12 +41,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.uasmuhammadalfinkhaerudin.presentation.MainViewModel
+import com.example.uasmuhammadalfinkhaerudin.presentation.home.navigation.AppNavigation
 import com.example.uasmuhammadalfinkhaerudin.ui.theme.UASMuhammadAlfinKhaerudinTheme
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.util.Calendar
-
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    @RequiresApi(Build.VERSION_CODES.O)
+    //@RequiresApi(Build.VERSION_CODES.O)
+
+    private val mainViewModel by viewModels<MainViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -55,8 +61,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    //Greeting("Android")
-                    Main()
+                    AppNavigation(mainViewModel = mainViewModel)
                 }
             }
         }
@@ -71,83 +76,83 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
     )
 }*/
 
-// Function Main
-@OptIn(ExperimentalMaterial3Api::class)
-@RequiresApi(Build.VERSION_CODES.O)
-@Composable
-fun Main() {
-    // Take day from system
-    var day by remember { mutableStateOf(Calendar.getInstance().get(Calendar.DAY_OF_WEEK)) }
-    // Convert day to indonesian language
-    val dayIndoVersion = when (day) {
-        Calendar.MONDAY -> "Senin"
-        Calendar.TUESDAY -> "Selasa"
-        Calendar.WEDNESDAY -> "Rabu"
-        Calendar.THURSDAY -> "Kamis"
-        Calendar.FRIDAY -> "Jumat"
-        Calendar.SATURDAY -> "Sabtu"
-        Calendar.SUNDAY -> "Minggu"
-        else -> "Unknown"
-    }
-    val listDays = mapOf(
-        Calendar.MONDAY to "Senin",
-        Calendar.TUESDAY to "Selasa",
-        Calendar.WEDNESDAY to "Rabu",
-        Calendar.THURSDAY to "Kamis",
-        Calendar.FRIDAY to "Jumat",
-        Calendar.SATURDAY to "Sabtu",
-        Calendar.SUNDAY to "Minggu"
-    )
-    val sheetState = rememberModalBottomSheetState()
-    val scope = rememberCoroutineScope()
-    var showBottomSheet by remember { mutableStateOf(false) }
-    Scaffold { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            TopAppBar(nameApp = "JAPEL", day = dayIndoVersion, action = { showBottomSheet = true })
+ //Function Main
+//@OptIn(ExperimentalMaterial3Api::class)
+//@RequiresApi(Build.VERSION_CODES.O)
+//@Composable
+//fun Main() {
+//    // Take day from system
+//    var day by remember { mutableStateOf(Calendar.getInstance().get(Calendar.DAY_OF_WEEK)) }
+//    // Convert day to indonesian language
+//    val dayIndoVersion = when (day) {
+//        Calendar.MONDAY -> "Senin"
+//        Calendar.TUESDAY -> "Selasa"
+//        Calendar.WEDNESDAY -> "Rabu"
+//        Calendar.THURSDAY -> "Kamis"
+//        Calendar.FRIDAY -> "Jumat"
+//        Calendar.SATURDAY -> "Sabtu"
+//        Calendar.SUNDAY -> "Minggu"
+//        else -> "Unknown"
+//    }
+//    val listDays = mapOf(
+//        Calendar.MONDAY to "Senin",
+//        Calendar.TUESDAY to "Selasa",
+//        Calendar.WEDNESDAY to "Rabu",
+//        Calendar.THURSDAY to "Kamis",
+//        Calendar.FRIDAY to "Jumat",
+//        Calendar.SATURDAY to "Sabtu",
+//        Calendar.SUNDAY to "Minggu"
+//    )
+//    val sheetState = rememberModalBottomSheetState()
+//    val scope = rememberCoroutineScope()
+//    var showBottomSheet by remember { mutableStateOf(false) }
+//    Scaffold { paddingValues ->
+//        Column(
+//            modifier = Modifier
+//                .fillMaxSize()
+//                .padding(paddingValues)
+//        ) {
+//            TopAppBar(nameApp = "JAPEL", day = dayIndoVersion, action = { showBottomSheet = true })
+//
+//            // Content jadwal
+//            ContentJadwal(pukul = "08.00 - 10.00", jadwal = "Pemrograman Mobile")
+//
+//            if (showBottomSheet) {
+//                ModalBottomSheet(
+//                    onDismissRequest = { showBottomSheet = false },
+//                    sheetState = sheetState
+//                ) {
+//                    Column {
+//                        listDays.forEach { (key, value) ->
+//                            Button(
+//                                onClick = {
+//                                    scope.launch { sheetState.hide() }.invokeOnCompletion {
+//                                        if (!sheetState.isVisible) {
+//                                            showBottomSheet = false
+//                                        }
+//                                        day = key
+//                                    }
+//                                },
+//                                colors = ButtonDefaults.buttonColors(
+//                                    containerColor = Color.Magenta,
+//                                    contentColor = Color.White
+//                                ),
+//                                // Kecilin buttonnya
+//                                modifier = Modifier.height(30.dp),
+//                                shape = CutCornerShape(percent = 25)
+//                            ) {
+//                                Text(text = value)
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
+//
+//}
 
-            // Content jadwal
-            ContentJadwal(pukul = "08.00 - 10.00", jadwal = "Pemrograman Mobile")
-
-            if (showBottomSheet) {
-                ModalBottomSheet(
-                    onDismissRequest = { showBottomSheet = false },
-                    sheetState = sheetState
-                ) {
-                    Column {
-                        listDays.forEach { (key, value) ->
-                            Button(
-                                onClick = {
-                                    scope.launch { sheetState.hide() }.invokeOnCompletion {
-                                        if (!sheetState.isVisible) {
-                                            showBottomSheet = false
-                                        }
-                                        day = key
-                                    }
-                                },
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = Color.Magenta,
-                                    contentColor = Color.White
-                                ),
-                                // Kecilin buttonnya
-                                modifier = Modifier.height(30.dp),
-                                shape = CutCornerShape(percent = 25)
-                            ) {
-                                Text(text = value)
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-}
-
-// Function for navbars
+//// Function for navbars
 @Composable
 fun TopAppBar(nameApp: String, day: String, action: () -> Unit = {}) {
     Row(
@@ -171,7 +176,9 @@ fun TopAppBar(nameApp: String, day: String, action: () -> Unit = {}) {
         )
         // Buat button tambah
         Button(
-            onClick = { /*TODO*/ },
+            onClick = {
+
+            },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Magenta,
                 contentColor = Color.White
@@ -188,60 +195,60 @@ fun TopAppBar(nameApp: String, day: String, action: () -> Unit = {}) {
         }
     }
 }
-
-// Function content jadwal
-@Composable
-fun ContentJadwal(pukul: String, jadwal: String) {
-    Row(
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        modifier = Modifier
-            .padding(16.dp)
-            .fillMaxWidth()
-    ) {
-        Text(
-            text = pukul,
-            modifier = Modifier
-                .padding(top = 5.dp)
-        )
-        Spacer(modifier = Modifier.width(10.dp))
-        Text(
-            text = jadwal,
-            modifier = Modifier
-                .padding(top = 5.dp)
-        )
-    }
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    UASMuhammadAlfinKhaerudinTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            //Greeting("Android")
-
-            /*// Take day from system
-            val day = java.time.LocalDate.now().dayOfWeek.toString()
-            // Convert day to indonesian language
-            val day_indo_version = when (day) {
-                "MONDAY" -> "Senin"
-                "TUESDAY" -> "Selasa"
-                "WEDNESDAY" -> "Rabu"
-                "THURSDAY" -> "Kamis"
-                "FRIDAY" -> "Jumat"
-                "SATURDAY" -> "Sabtu"
-                "SUNDAY" -> "Minggu"
-                else -> "Unknown"
-            }
-            TopAppBar(name_app = "JAPEL", day = day_indo_version)*/
-
-            /*// Content jadwal
-            ContentJadwal(pukul = "08.00 - 10.00", jadwal = "Pemrograman Mobile")*/
-
-            Main()
-        }
-    }
-}
+//
+//// Function content jadwal
+//@Composable
+//fun ContentJadwal(pukul: String, jadwal: String) {
+//    Row(
+//        horizontalArrangement = Arrangement.SpaceEvenly,
+//        modifier = Modifier
+//            .padding(16.dp)
+//            .fillMaxWidth()
+//    ) {
+//        Text(
+//            text = pukul,
+//            modifier = Modifier
+//                .padding(top = 5.dp)
+//        )
+//        Spacer(modifier = Modifier.width(10.dp))
+//        Text(
+//            text = jadwal,
+//            modifier = Modifier
+//                .padding(top = 5.dp)
+//        )
+//    }
+//}
+//
+//@RequiresApi(Build.VERSION_CODES.O)
+//@Preview(showBackground = true)
+//@Composable
+//fun GreetingPreview() {
+//    UASMuhammadAlfinKhaerudinTheme {
+//        Surface(
+//            modifier = Modifier.fillMaxSize(),
+//            color = MaterialTheme.colorScheme.background
+//        ) {
+//            //Greeting("Android")
+//
+//            /*// Take day from system
+//            val day = java.time.LocalDate.now().dayOfWeek.toString()
+//            // Convert day to indonesian language
+//            val day_indo_version = when (day) {
+//                "MONDAY" -> "Senin"
+//                "TUESDAY" -> "Selasa"
+//                "WEDNESDAY" -> "Rabu"
+//                "THURSDAY" -> "Kamis"
+//                "FRIDAY" -> "Jumat"
+//                "SATURDAY" -> "Sabtu"
+//                "SUNDAY" -> "Minggu"
+//                else -> "Unknown"
+//            }
+//            TopAppBar(name_app = "JAPEL", day = day_indo_version)*/
+//
+//            /*// Content jadwal
+//            ContentJadwal(pukul = "08.00 - 10.00", jadwal = "Pemrograman Mobile")*/
+//
+//            Main()
+//        }
+//    }
+//}
